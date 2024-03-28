@@ -13,7 +13,7 @@ from pfl.hyperparam import get_param_value
 from pfl.metrics import Metrics
 from pfl.context import CentralContext
 from pfl.statistics.polya_mixture.model import (
-    PolyaMixtureModelType, PolyaMixtureModelHyperParamsType)
+    MDMModelType, MDMModelHyperParamsType)
 from pfl.stats import MappedVectorStatistics
 from pfl.internal.ops import get_ops
 from pfl.algorithm.base import FederatedAlgorithm, AlgorithmHyperParams
@@ -21,7 +21,7 @@ from pfl.internal.bridge import FrameworkBridgeFactory as bridges
 
 
 @dataclass(frozen=True)
-class PolyaMixtureInitializationAlgorithmParams(AlgorithmHyperParams):
+class MDMInitializationAlgorithmParams(AlgorithmHyperParams):
     """
     Parameters for initialization algorithm of Polya Mixture.
 
@@ -51,15 +51,15 @@ class PolyaMixtureInitializationAlgorithmParams(AlgorithmHyperParams):
         assert np.all(self.num_samples_mixture_bins > 0)
 
 
-PolyaMixtureInitializationAlgorithmParamsType = TypeVar(
-    'PolyaMixtureInitializationAlgorithmParamsType',
-    bound=PolyaMixtureInitializationAlgorithmParams)
+MDMInitializationAlgorithmParamsType = TypeVar(
+    'MDMInitializationAlgorithmParamsType',
+    bound=MDMInitializationAlgorithmParams)
 
 
-class PolyaMixtureInitializationAlgorithm(
-        FederatedAlgorithm[PolyaMixtureInitializationAlgorithmParamsType,
-                           PolyaMixtureModelHyperParamsType,
-                           PolyaMixtureModelType, MappedVectorStatistics]):
+class MDMInitializationAlgorithm(
+        FederatedAlgorithm[MDMInitializationAlgorithmParamsType,
+                           MDMModelHyperParamsType,
+                           MDMModelType, MappedVectorStatistics]):
     """
     Federated algorithm class for learning initialization of mixture of Polya 
     (Dirichlet-Multinomial) distribution. 
@@ -71,15 +71,15 @@ class PolyaMixtureInitializationAlgorithm(
 
     def get_next_central_contexts(
         self,
-        model: PolyaMixtureModelType,
+        model: MDMModelType,
         iteration: int,
-        algorithm_params: PolyaMixtureInitializationAlgorithmParamsType,
-        model_train_params: PolyaMixtureModelHyperParamsType,
-        model_eval_params: Optional[PolyaMixtureModelHyperParamsType] = None,
+        algorithm_params: MDMInitializationAlgorithmParamsType,
+        model_train_params: MDMModelHyperParamsType,
+        model_eval_params: Optional[MDMModelHyperParamsType] = None,
     ) -> Tuple[Optional[Tuple[
-            CentralContext[PolyaMixtureInitializationAlgorithmParamsType,
-                           PolyaMixtureModelHyperParamsType], ...]],
-               PolyaMixtureModelType, Metrics]:
+            CentralContext[MDMInitializationAlgorithmParamsType,
+                           MDMModelHyperParamsType], ...]],
+               MDMModelType, Metrics]:
 
         if iteration == algorithm_params.central_num_iterations:
             return None, model, Metrics()
@@ -99,14 +99,14 @@ class PolyaMixtureInitializationAlgorithm(
 
     def simulate_one_user(
         self,
-        model: PolyaMixtureModelType,
+        model: MDMModelType,
         user_dataset: AbstractDataset,
         central_context: CentralContext[
-            PolyaMixtureInitializationAlgorithmParamsType,
-            PolyaMixtureModelHyperParamsType],
+            MDMInitializationAlgorithmParamsType,
+            MDMModelHyperParamsType],
     ) -> Tuple[Optional[MappedVectorStatistics], Metrics]:
         """
-        Encode user's dataset into statistics with a `PolyaMixtureModel`.
+        Encode user's dataset into statistics with a `MDMModel`.
         """
         algorithm_params = central_context.algorithm_params
 
@@ -157,10 +157,10 @@ class PolyaMixtureInitializationAlgorithm(
 
     def process_aggregated_statistics(
         self, central_context: CentralContext[
-            PolyaMixtureInitializationAlgorithmParamsType,
-            PolyaMixtureModelHyperParamsType], aggregate_metrics: Metrics,
-        model: PolyaMixtureModelType, statistics: MappedVectorStatistics
-    ) -> Tuple[PolyaMixtureModelType, Metrics]:
+            MDMInitializationAlgorithmParamsType,
+            MDMModelHyperParamsType], aggregate_metrics: Metrics,
+        model: MDMModelType, statistics: MappedVectorStatistics
+    ) -> Tuple[MDMModelType, Metrics]:
 
         # Directly aggregate running sum of statistics
         # only relevant if num_central_iterations > 1

@@ -21,7 +21,7 @@ FrameworkModelType = TypeVar('FrameworkModelType')
 
 
 @dataclass(frozen=True)
-class PolyaMixtureModelHyperParams(ModelHyperParams):
+class MDMModelHyperParams(ModelHyperParams):
     """
     Parameters for Polya-Mixture model.
     """
@@ -37,11 +37,11 @@ class PolyaMixtureModelHyperParams(ModelHyperParams):
                 'Must have >= 2 categories being modelled with Polya-Mixture')
 
 
-PolyaMixtureModelHyperParamsType = TypeVar('PolyaMixtureModelHyperParamsType',
-                                           bound=PolyaMixtureModelHyperParams)
+MDMModelHyperParamsType = TypeVar('MDMModelHyperParamsType',
+                                           bound=MDMModelHyperParams)
 
 
-class PolyaMixtureModel(Model, Generic[PolyaMixtureModelHyperParamsType,
+class MDMModel(Model, Generic[MDMModelHyperParamsType,
                                        Tensor]):
     """
     Polya Mixture model.
@@ -127,7 +127,7 @@ class PolyaMixtureModel(Model, Generic[PolyaMixtureModelHyperParamsType,
 
     def apply_model_update(
         self, statistics: MappedVectorStatistics
-    ) -> Tuple['PolyaMixtureModel', Metrics]:
+    ) -> Tuple['MDMModel', Metrics]:
 
         self._alphas = statistics['alphas']
         self._phi = statistics['phi']
@@ -136,5 +136,5 @@ class PolyaMixtureModel(Model, Generic[PolyaMixtureModelHyperParamsType,
         return self, Metrics()
 
 
-PolyaMixtureModelType = TypeVar('PolyaMixtureModelType',
-                                bound=PolyaMixtureModel)
+MDMModelType = TypeVar('MDMModelType',
+                                bound=MDMModel)

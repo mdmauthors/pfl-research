@@ -12,14 +12,14 @@ from pfl.hyperparam import get_param_value
 from pfl.metrics import Metrics
 from pfl.context import CentralContext
 from pfl.statistics.polya_mixture.model import (
-    PolyaMixtureModelType, PolyaMixtureModelHyperParamsType)
+    MDMModelType, MDMModelHyperParamsType)
 from pfl.stats import MappedVectorStatistics
 from pfl.algorithm.base import FederatedAlgorithm, AlgorithmHyperParams
 from pfl.internal.bridge import FrameworkBridgeFactory as bridges
 
 
 @dataclass(frozen=True)
-class PolyaMixtureAlgorithmParams(AlgorithmHyperParams):
+class MDMAlgorithmParams(AlgorithmHyperParams):
     """
     Parameters for initialization algorithm of Polya Mixture.
 
@@ -37,14 +37,14 @@ class PolyaMixtureAlgorithmParams(AlgorithmHyperParams):
         torch.Tensor]] = lambda user_dataset: user_dataset.raw_data[1]
 
 
-PolyaMixtureAlgorithmParamsType = TypeVar('PolyaMixtureAlgorithmParamsType',
-                                          bound=PolyaMixtureAlgorithmParams)
+MDMAlgorithmParamsType = TypeVar('MDMAlgorithmParamsType',
+                                          bound=MDMAlgorithmParams)
 
 
-class PolyaMixtureAlgorithm(
-        FederatedAlgorithm[PolyaMixtureAlgorithmParamsType,
-                           PolyaMixtureModelHyperParamsType,
-                           PolyaMixtureModelType, MappedVectorStatistics]):
+class MDMAlgorithm(
+        FederatedAlgorithm[MDMAlgorithmParamsType,
+                           MDMModelHyperParamsType,
+                           MDMModelType, MappedVectorStatistics]):
     """
     Federated algorithm class for learning mixture of Polya
     (Dirichlet-Multinomial) distribution using MLE algorithm.
@@ -52,14 +52,14 @@ class PolyaMixtureAlgorithm(
 
     def get_next_central_contexts(
         self,
-        model: PolyaMixtureModelType,
+        model: MDMModelType,
         iteration: int,
-        algorithm_params: PolyaMixtureAlgorithmParamsType,
-        model_train_params: PolyaMixtureModelHyperParamsType,
-        model_eval_params: Optional[PolyaMixtureModelHyperParamsType] = None,
-    ) -> Tuple[Optional[Tuple[CentralContext[PolyaMixtureAlgorithmParamsType,
-                                             PolyaMixtureModelHyperParamsType],
-                              ...]], PolyaMixtureModelType, Metrics]:
+        algorithm_params: MDMAlgorithmParamsType,
+        model_train_params: MDMModelHyperParamsType,
+        model_eval_params: Optional[MDMModelHyperParamsType] = None,
+    ) -> Tuple[Optional[Tuple[CentralContext[MDMAlgorithmParamsType,
+                                             MDMModelHyperParamsType],
+                              ...]], MDMModelType, Metrics]:
 
 
         if (model.alphas <= 0).any(): 
@@ -87,13 +87,13 @@ class PolyaMixtureAlgorithm(
 
     def simulate_one_user(
         self,
-        model: PolyaMixtureModelType,
+        model: MDMModelType,
         user_dataset: AbstractDataset,
-        central_context: CentralContext[PolyaMixtureAlgorithmParamsType,
-                                        PolyaMixtureModelHyperParamsType],
+        central_context: CentralContext[MDMAlgorithmParamsType,
+                                        MDMModelHyperParamsType],
     ) -> Tuple[Optional[MappedVectorStatistics], Metrics]:
         """
-        Encode user's dataset into statistics with a `PolyaMixtureModel`.
+        Encode user's dataset into statistics with a `MDMModel`.
 
         central_context.algorithm_params.extract_categories_fn is a callable
         used to extract the categories tracked with the Polya-Mixture model.
@@ -158,11 +158,11 @@ class PolyaMixtureAlgorithm(
 
     def process_aggregated_statistics(
         self,
-        central_context: CentralContext[PolyaMixtureAlgorithmParamsType,
-                                        PolyaMixtureModelHyperParamsType],
-        aggregate_metrics: Metrics, model: PolyaMixtureModelType,
+        central_context: CentralContext[MDMAlgorithmParamsType,
+                                        MDMModelHyperParamsType],
+        aggregate_metrics: Metrics, model: MDMModelType,
         statistics: MappedVectorStatistics
-    ) -> Tuple[PolyaMixtureModelType, Metrics]:
+    ) -> Tuple[MDMModelType, Metrics]:
 
         # The new weight of a mixture component is the mean client weight of
         # that component

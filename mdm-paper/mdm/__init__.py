@@ -1,4 +1,4 @@
-from .model import (PolyaMixtureModelHyperParams, PolyaMixtureModel)
-from .init_algorithm import (PolyaMixtureInitializationAlgorithmParams,
-                             PolyaMixtureInitializationAlgorithm)
-from .algorithm import (PolyaMixtureAlgorithmParams, PolyaMixtureAlgorithm)
+from .model import (MDMModelHyperParams, MDMModel)
+from .init_algorithm import (MDMInitializationAlgorithmParams,
+                             MDMInitializationAlgorithm)
+from .algorithm import (MDMAlgorithmParams, MDMAlgorithm)

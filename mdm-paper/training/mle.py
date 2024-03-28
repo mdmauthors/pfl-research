@@ -1,9 +1,9 @@
 import numpy as np
 
 from pfl.statistics.polya_mixture import (
-    PolyaMixtureModel, PolyaMixtureModelHyperParams, PolyaMixtureAlgorithm,
-    PolyaMixtureAlgorithmParams, PolyaMixtureInitializationAlgorithm,
-    PolyaMixtureInitializationAlgorithmParams)
+    MDMModel, MDMModelHyperParams, MDMAlgorithm,
+    MDMAlgorithmParams, MDMInitializationAlgorithm,
+    MDMInitializationAlgorithmParams)
 from pfl.aggregate.simulate import SimulatedBackend
 from pfl.callback import ModelCheckpointingCallback
 from pfl.privacy import CentrallyAppliedPrivacyMechanism, MomentsAccountantGaussianMechanism
@@ -26,8 +26,8 @@ def solve_polya_mixture_mle(
     """
 
     # model
-    model = PolyaMixtureModel()
-    model_params = PolyaMixtureModelHyperParams(num_components, num_categories)
+    model = MDMModel()
+    model_params = MDMModelHyperParams(num_components, num_categories)
     print(f'before init algo - model alphas: {model.alphas}, phi: {model.phi}')
 
     if add_DP:
@@ -57,8 +57,8 @@ def solve_polya_mixture_mle(
     print('\nnum_samples_mixture_bins', num_samples_mixture_bins)
 
     # init algorithm
-    init_algorithm = PolyaMixtureInitializationAlgorithm()
-    init_algorithm_params = PolyaMixtureInitializationAlgorithmParams(
+    init_algorithm = MDMInitializationAlgorithm()
+    init_algorithm_params = MDMInitializationAlgorithmParams(
         cohort_size=arguments.cohort_size_init_algorithm,
         num_samples_mixture_bins=num_samples_mixture_bins,
         strategy=arguments.strategy,
@@ -78,8 +78,8 @@ def solve_polya_mixture_mle(
     # np.ones(num_mixture_components)
 
     # algorithm
-    algorithm = PolyaMixtureAlgorithm()
-    algorithm_params = PolyaMixtureAlgorithmParams(
+    algorithm = MDMAlgorithm()
+    algorithm_params = MDMAlgorithmParams(
         cohort_size=arguments.cohort_size_algorithm,
         num_samples_mixture_bins=num_samples_mixture_bins,
         central_num_iterations=arguments.central_num_iterations_algorithm,
