@@ -58,7 +58,6 @@ class MDMModel(Model, Generic[MDMModelHyperParamsType,
         np.ndarray of shape (number_mixture_components, num_categories), stores
         the alpha parameter for the Dirichlet of each mixture component.
     """
-    #set_framework_module(get_default_framework_module())
     set_framework_module(pytorch_ops)
     _MODEL_CKPT_NAME = "polya-mixture.joblib"
 

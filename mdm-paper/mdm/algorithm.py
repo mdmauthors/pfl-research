@@ -228,9 +228,6 @@ class MDMAlgorithm(
         # numerator and denominator are weighted by each client before being
         # aggregated, so this is a weighted update.
 
-        # TODO need a way to enforce that model.alphas is the same type as
-        # statistics['numerator'] and statistics['denominator'], e.g. both
-        # tensors
         if (model.alphas == 0).any():
             raise AssertionError('model.alphas had zeros before update')
         alphas = bridges.polya_mixture_bridge().update_alpha(

@@ -1,8 +1,8 @@
 # Contributing
 
-Thank you for your interest in contributing! Your contributions are very welcome and are greatly appreciated.
+Thanks for your interest in contributing. This project was released to accompany a research paper for purposes of reproducibility, and beyond its publication there are limited plans for future development of the repository.
 
-Please see the [documentation for contributing](http://apple.github.io/pfl-research/support/contributing.html) for more information on how to contribute to pfl-research.
+While we welcome new pull requests and issues please note that our response may be limited. Forks and out-of-tree improvements are strongly encouraged.
 
 ## Before you get started
 

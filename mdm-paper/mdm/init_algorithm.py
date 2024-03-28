@@ -112,8 +112,9 @@ class MDMInitializationAlgorithm(
 
         if algorithm_params.strategy == 'random':
             # Randomly assign user to a mixture component
-            # TODO this approach might not work when num mixture > 1 and the cohort size is large, as the p and q values will likely to be very similar for all clusters
-            # and this symmetry could hurt convergence.
+            # TODO this approach might not work when num mixture > 1 and the
+            # cohort size is large, as the p and q values will likely be very
+            # similar for all clusters and this symmetry could hurt convergence.
             component = np.random.choice(
                 range(central_context.model_train_params.num_components))
         else:
@@ -187,9 +188,8 @@ class MDMInitializationAlgorithm(
             q = torch.clamp(q, min=0)
             e = torch.clamp(e, min=0)
 
-            # TODO need to prevent p, q, and subsequently alpha, and num_samples_distribution from having no non-zero values.
-
-            # TODO Fix issue of alpha = 0 by assigning some small prob to all categories
+            # Need to prevent p, q, and subsequently alpha, and num_samples_distribution from having no non-zero values.
+            # Fix issue of alpha = 0 by assigning some small prob to all categories
             # Cannot have alpha = 0 for any of the categories.
             # In practice, we might get alpha = 0 if the cohort size used for the initialisation step was too small,
             # such that we did not see any instances of this category occuring in the population.
@@ -197,31 +197,27 @@ class MDMInitializationAlgorithm(
             # Fix this issue by apportioning a small amount of the probability to that value of alpha.
 
             # Check if any element is equal to zero
-            # TODO: support <= 0 in the case of DP causing probability to be negative
-            #print('orig p.shape', p.shape, p)
             if (p == 0).any():
-                print('init fixing zeros in p')
                 num_categories_leq_zero = torch.sum(p <= 0, dim=1)
                 extra_mass = torch.sum(p, dim=1) * 0.01 / num_categories_leq_zero
 
-                #print('extra_mass', extra_mass.shape, extra_mass)
                 p = torch.where(p>0, p, extra_mass.unsqueeze(1).expand_as(p))
                 # Note fix zero issue in p and q separately because q >= p^2
 
-            # TODO can approximate p as p/(cohort size/num_components), since users are randomly assigned to components
-            # TODO similarly can approximate q as q/(cohort_size/num_components).
-            # This might make the results more accurate, since DP noise will be added to e, component_sums will be noisy.
+            # TODO Consider approximating p as p/(cohort size/num_components),
+            # since users are randomly assigned to components
+            # Similarly can approximate q as q/(cohort_size/num_components).
+            # This might make the results more accurate, since DP noise will
+            # be added to e, component_sums will be noisy.
             component_sums = torch.sum(e, dim=1, keepdim=True)
             num_users_component = central_context.algorithm_params.cohort_size / num_components
             p = torch.divide(p, num_users_component)
 
             if (q == 0).any():
-                print('init fixing zeros in q')
                 q[q == 0] = torch.pow(p[q == 0], 2) * 1.1
             q = torch.divide(q, num_users_component)
 
             if (e == 0).any():
-                print('init fixing zeros in num samples distribution')
                 num_zero = torch.sum(e==0, dim=1, keepdim=True)
                 extra_mass = torch.sum(e, dim=1, keepdim=True)*0.01 / num_zero
                 e = torch.where(e>0, e, extra_mass.expand_as(e))

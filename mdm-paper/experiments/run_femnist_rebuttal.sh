@@ -4,10 +4,10 @@ set -oeux
 
 export PYTHONPATH=.
 
-for num_components in 4; do
+for num_components in 1 2 3; do
     max_num_samples_mixture_component=450
     filter_method='sample' # 'sample' 'index'
-    sample_fraction=0.8
+    sample_fraction=0.5
     include_sampled='True'
     start_idx=0
     end_idx=1302
