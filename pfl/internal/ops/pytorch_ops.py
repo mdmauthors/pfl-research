@@ -408,6 +408,14 @@ def global_norm(tensors: List[torch.Tensor], order: float) -> torch.Tensor:
     return norm(torch.stack([norm(t, order) for t in tensors]), order)
 
 
+def zeros(size) -> torch.Tensor:
+    return torch.zeros(size)  
+
+
+def ones(size) -> torch.Tensor:
+    return torch.ones(size)
+
+
 def to_numpy(tensor: torch.Tensor) -> np.ndarray:
     """
     Convert a PyTorch tensor to a numpy array.
